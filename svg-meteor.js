@@ -2,6 +2,14 @@ if (Meteor.isClient) {
   // counter starts at 0
   Session.setDefault('counter', 0);
 
+  let colorPicker = function(value){
+    if (value <= 20) {
+      return '#666666';
+    }else if (value > 20) {
+      return '#ff0033';
+    }
+  };
+
   Template.hello.onRendered(
     function() {
       let dataset = _.range(5, 30, 5);
@@ -14,19 +22,36 @@ if (Meteor.isClient) {
       svg.selectAll('rect')
         .data(dataset).enter()
         .append('rect')
-        .attr('x', function(d, i) {
-          return i * (w / dataset.length);
-        })
-        .attr('y', function(d, i) {
-          return h - d * 4;
-        })
-        .attr('width', w / dataset.length - padding)
-        .attr('height', function(d) {
-          return d * 4;
-        })
-        .attr('fill', function(d){
-          return 'rgb(' + (d*10) +',0,0)';
+        //pass an array of values instead of chaining attr methods
+        .attr({
+          x: function(d, i) {
+            return i * (w / dataset.length);
+          },
+          y: function(d, i) {
+            return h - d * 4;
+          },
+          width: w / dataset.length - padding,
+          height: function(d) {
+            return d * 4;
+          },
+          fill: function(d){
+            return colorPicker(d)
+          }
         });
+
+      // .attr('x', function(d, i) {
+      //   return i * (w / dataset.length);
+      // })
+      // .attr('y', function(d, i) {
+      //   return h - d * 4;
+      // })
+      // .attr('width', w / dataset.length - padding)
+      // .attr('height', function(d) {
+      //   return d * 4;
+      // })
+      // .attr('fill', function(d){
+      //   return 'rgb(' + (d*10) +',0,0)';
+      // });
     }
   );
 
