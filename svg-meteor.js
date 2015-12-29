@@ -4,36 +4,29 @@ if (Meteor.isClient) {
 
   Template.hello.onRendered(
     function() {
-
-      let w = 200;
-      let h = 100;
-      let padding = 2;
       let dataset = _.range(5, 30, 5);
-      let svg = d3.select('#d3')
-        .append('svg')
-        .attr('width', w)
-        .attr('height', h);
+      let w = 300;
+      let h = _.max(dataset) * 4;
+      let padding = 2;
+      let svg = d3.select('#d3').append('svg')
+        .attr('width', w).attr('height', h);
 
       svg.selectAll('rect')
-        .data(dataset)
-        .enter()
+        .data(dataset).enter()
         .append('rect')
         .attr('x', function(d, i) {
           return i * (w / dataset.length);
         })
-        .attr('y', function(d){
-          return h - d;
+        .attr('y', function(d, i) {
+          return h - d * 4;
         })
         .attr('width', w / dataset.length - padding)
-        .attr('height', function(d){
-          return d;
+        .attr('height', function(d) {
+          return d * 4;
+        })
+        .attr('fill', function(d){
+          return 'rgb(' + (d*10) +',0,0)';
         });
-
-      $('rect').each(function(){
-        $(this).on('mouseover', function(){
-          console.log("value of this", this.__data__);
-        });
-      });
     }
   );
 
