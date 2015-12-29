@@ -1,0 +1,28 @@
+<head>
+  <title>svg-meteor</title>
+</head>
+
+<body>
+  <h1>Welcome to Meteor!</h1>
+
+  {{> hello}}
+</body>
+
+<template name="hello">
+  <button>Click Me</button>
+  <p>You've pressed the button {{counter}} times.</p>
+  <hr>
+
+  <section id="manual">
+    <h2>Manually</h2>
+    <svg width="250" height="50">
+      <text x="0" y="25">Easy Peasy</text>
+    </svg>
+  </section>
+
+  <section id="d3">
+    <h2>
+      D3
+    </h2>
+  </section>
+</template>
