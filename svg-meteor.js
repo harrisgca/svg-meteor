@@ -2,21 +2,24 @@ if (Meteor.isClient) {
   // counter starts at 0
   Session.setDefault('counter', 0);
 
-  let colorPicker = function(value){
+  var colorPicker = function(value) {
     if (value <= 20) {
       return '#666666';
-    }else if (value > 20) {
+    } else if (value > 20) {
       return '#ff0033';
     }
   };
 
   Template.hello.onRendered(
     function() {
-      let dataset = _.range(5, 30, 5);
-      let w = 300;
-      let h = _.max(dataset) * 4;
-      let padding = 2;
-      let svg = d3.select('#d3').append('svg')
+      var dataset = [5, 10, 15, 20, 25, 11, 25, 22, 18, 7];
+      var numberOfElements = dataset.length;
+      var heightOfLargestElement = _.max(dataset) * 4;
+      var topPadding = 30;
+      var w = 300;
+      var h = heightOfLargestElement + topPadding;
+      var padding = 2;
+      var svg = d3.select('#d3').append('svg')
         .attr('width', w).attr('height', h);
 
       svg.selectAll('rect')
@@ -25,33 +28,40 @@ if (Meteor.isClient) {
         //pass an array of values instead of chaining attr methods
         .attr({
           x: function(d, i) {
-            return i * (w / dataset.length);
+            return i * (w / numberOfElements);
           },
           y: function(d, i) {
             return h - d * 4;
           },
-          width: w / dataset.length - padding,
+          width: w / numberOfElements - padding,
           height: function(d) {
             return d * 4;
           },
-          fill: function(d){
-            return colorPicker(d)
+          fill: function(d) {
+            return colorPicker(d);
           }
         });
 
-      // .attr('x', function(d, i) {
-      //   return i * (w / dataset.length);
-      // })
-      // .attr('y', function(d, i) {
-      //   return h - d * 4;
-      // })
-      // .attr('width', w / dataset.length - padding)
-      // .attr('height', function(d) {
-      //   return d * 4;
-      // })
-      // .attr('fill', function(d){
-      //   return 'rgb(' + (d*10) +',0,0)';
-      // });
+      svg.selectAll('text')
+        .data(dataset)
+        .enter()
+        .append('text')
+        .text(function(d) {
+          return d;
+        })
+        .attr({
+          'text-anchor': 'middle',
+          x: function(data, idx) {
+            return idx * (w / numberOfElements) + (w / numberOfElements - padding) / 2;
+          },
+          y: function(data) {
+            return h - (data * 4) + 14;
+          },
+          "font-family": 'sans-serif',
+          "font-size": 12,
+          "fill": "#ffffff"
+        });
+
     }
   );
 
