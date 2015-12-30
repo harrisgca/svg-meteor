@@ -12,57 +12,80 @@ if (Meteor.isClient) {
 
   Template.hello.onRendered(
     function() {
-      var dataset = [5, 10, 15, 20, 25, 11, 25, 22, 18, 7];
-      var numberOfElements = dataset.length;
-      var heightOfLargestElement = _.max(dataset) * 4;
-      var topPadding = 30;
-      var w = 300;
-      var h = heightOfLargestElement + topPadding;
-      var padding = 2;
-      var svg = d3.select('#d3').append('svg')
-        .attr('width', w).attr('height', h);
+      var h = 350;
+      var w = 400;
 
-      svg.selectAll('rect')
-        .data(dataset).enter()
-        .append('rect')
-        //pass an array of values instead of chaining attr methods
+      // var monthlySales = [
+      //   {month: 10, sales: 20},
+      //   {month: 20, sales: 14},
+      //   {month: 30, sales: 20},
+      //   {month: 40, sales: 21},
+      //   {month: 50, sales: 15},
+      //   {month: 60, sales: 22},
+      //   {month: 70, sales: 9},
+      //   {month: 80, sales: 6},
+      //   {month: 90, sales: 23},
+      //   {month: 100, sales: 7},
+      // ];
+
+      var monthlySales = [
+        {month: 10, sales: 100},
+        {month: 20, sales: 130},
+        {month: 30, sales: 250},
+        {month: 40, sales: 300},
+        {month: 50, sales: 265},
+        {month: 60, sales: 225},
+        {month: 70, sales: 180},
+        {month: 80, sales: 120},
+        {month: 90, sales: 145},
+        {month: 100, sales: 130}
+      ];
+
+      var lineFun = d3.svg.line()
+        .x(function(d) {
+          return d.month * 3;
+        })
+        .y(function(d) {
+          return h - d.sales;
+        })
+        .interpolate('linear');
+
+      var svg = d3.select('#d3').append('svg').attr({
+        width: w,
+        height: h
+      });
+
+      var viz = svg.append('path')
         .attr({
-          x: function(d, i) {
-            return i * (w / numberOfElements);
-          },
-          y: function(d, i) {
-            return h - d * 4;
-          },
-          width: w / numberOfElements - padding,
-          height: function(d) {
-            return d * 4;
-          },
-          fill: function(d) {
-            return colorPicker(d);
-          }
+          d:lineFun(monthlySales),
+          "stroke": "purple",
+          "stroke-width": 2,
+          "fill": "none"
         });
 
-      svg.selectAll('text')
-        .data(dataset)
+      //add labels
+      var labels = svg.selectAll('text')
+        .data(monthlySales)
         .enter()
         .append('text')
-        .text(function(d) {
-          return d;
-        })
+        .text(function(d){ return d.sales; })
         .attr({
-          'text-anchor': 'middle',
-          x: function(data, idx) {
-            return idx * (w / numberOfElements) + (w / numberOfElements - padding) / 2;
-          },
-          y: function(data) {
-            return h - (data * 4) + 14;
-          },
-          "font-family": 'sans-serif',
-          "font-size": 12,
-          "fill": "#ffffff"
+          x: function(d){ return d.month*3 - 25;},
+          y: function(d){ return h - d.sales;},
+          "font-size": "12px",
+          "fill": "#666666",
+          "text-anchor": "start",
+          "dy": ".35em",
+          "font-weight": function(d, i){
+            if (i===0 || i===(monthlySales.length-1)) {
+              return "bold";
+            }else {
+              return "normal";
+            }
+          }
         });
-
     }
+
   );
 
   Template.hello.helpers({
